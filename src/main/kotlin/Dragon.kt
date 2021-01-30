@@ -3,13 +3,9 @@ class Dragon(private val attackStrength: Int, private val heatPoint: Int) : IEne
 
     override fun attackStrength(): Int = attackStrength
 
-    override fun reward(): Reward {
-        return Reward.DRAGON_BAFF
-    }
+    override fun reward(): Reward = Reward.DRAGON_BAFF
 
-    override fun heatPoint(): Int {
-        return heatPoint
-    }
+    override fun heatPoint(): Int =  heatPoint
 
     companion object {
         const val TYPE = "DRAGON"

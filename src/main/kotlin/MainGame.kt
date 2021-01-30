@@ -1,6 +1,5 @@
 import java.io.File
 import java.io.FileNotFoundException
-import java.lang.Character
 import java.util.*
 
 fun main() {
@@ -15,6 +14,4 @@ fun main() {
     } catch (ex: CharacterDeathException) {
         println(ex.message)
     }
-
-    //character.showStats()
 }

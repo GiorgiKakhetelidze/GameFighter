@@ -23,31 +23,10 @@ class EnemyBaseImpl(scanner: Scanner) : IEnemyBase {
         for (enemy in enemies) {
             character.fight(enemy)
             character.enemyKilled += 1
-            if (character.gold < Shop.heatPointPrice)
-                println("you killed enemy ${enemy.type()} and got reward ${enemy.reward()} going to another enemy")
-            else {
-                println(
-                    "you killed enemy ${enemy.type()} and got reward ${enemy.reward()}, you have enough " +
-                            "gold(minimum) to rest and visit shop y/n ?"
-                )
-                enterShop(character)
-            }
+            character.needShop(DurabilityShop(), enemy);
         }
 
         println("Our Hero killed all enemies")
     }
 
-    private fun enterShop(character: Character) {
-
-        val scn = Scanner(System.`in`)
-        var input = scn.next().toLowerCase()
-
-        while (input != "y" && input != "n") {
-            println("Please enter y or n")
-            input = scn.next().toLowerCase()
-        }
-
-        if (input == "y")
-            Shop.showMenu(character)
-    }
 }

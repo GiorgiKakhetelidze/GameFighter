@@ -3,13 +3,9 @@ class Mutant(private val attackStrength: Int, private val heatPoint: Int) : IEne
 
     override fun attackStrength(): Int = attackStrength
 
-    override fun reward(): Reward {
-        return Reward.MUTANT_ARMOR
-    }
+    override fun reward(): Reward = Reward.MUTANT_ARMOR
 
-    override fun heatPoint(): Int {
-        return heatPoint
-    }
+    override fun heatPoint(): Int = heatPoint
 
     companion object {
         const val TYPE = "MUTANT"
