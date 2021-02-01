@@ -1,32 +1,62 @@
 import java.util.*
 
-class Character(private var heatPoint: Double, private val weaknessEnemyType: String, private val attackStrength: Int) {
+class Character(
+    private var heatPoint: Double,
+    weaknessEnemyTypeFirst: String,
+    weaknessEnemyTypeSecond: String,
+    private val attackStrength: Int
+) {
 
+    val weaknessTypeList = ArrayList<String>()
     private var resistance = 1.0
     private var gold = 0
     private val startingHeatPoint = heatPoint
     var enemyKilled = 0
 
+    init {
+        if (weaknessEnemyTypeFirst != weaknessEnemyTypeSecond) {
+            weaknessTypeList.add(weaknessEnemyTypeFirst)
+            weaknessTypeList.add(weaknessEnemyTypeSecond)
+        } else
+            weaknessTypeList.add(weaknessEnemyTypeFirst)
+    }
+
+    //Updated: fighting both side
     fun fight(enemy: IEnemy) {
-        heatPoint = if (enemy.type() == weaknessEnemyType)
+
+        while (enemy.heatPoint > 0 && heatPoint > 0) {
+            makeDamage(enemy)
+            receiveDamage(enemy)
+        }
+    }
+
+    private fun receiveDamage(enemy: IEnemy) {
+        heatPoint = if (weaknessTypeList.contains(enemy.type()))
             heatPoint - enemy.attackStrength() * 2 / resistance
         else
             heatPoint - enemy.attackStrength() / resistance
 
-        finishFight(enemy)
+        if (heatPoint <= 0) throw CharacterDeathException("Our beloved hero has been fallen")
     }
 
-    private fun finishFight(enemy: IEnemy) {
+    private fun makeDamage(enemy: IEnemy) {
+        enemy.heatPoint -= this.attackStrength
+
+        if (enemy.heatPoint <= 0)
+            takeReward(enemy)
+    }
+
+    private fun takeReward(enemy: IEnemy) {
         when {
-            heatPoint <= 0 -> throw CharacterDeathException("Our beloved hero has been fallen")
             enemy.reward() == Reward.DRAGON_BAFF -> {
                 heatPoint += 100
                 gold += 30
             }
-            else -> {
+            enemy.reward() == Reward.MUTANT_ARMOR -> {
                 resistance += 0.1
                 gold += 20
             }
+            enemy.reward() == Reward.ZOMBIE -> gold += 40
         }
     }
 
@@ -43,7 +73,6 @@ class Character(private var heatPoint: Double, private val weaknessEnemyType: St
             shop.showMenu(this)
             buyItem(shop.request(), shop)
         }
-
     }
 
     fun needShop(shop: DurabilityShop, enemy: IEnemy) {
@@ -57,7 +86,6 @@ class Character(private var heatPoint: Double, private val weaknessEnemyType: St
             enterShop(shop)
         }
     }
-
 
     private fun buyItem(num: Int, shop: DurabilityShop) {
         when {
@@ -79,9 +107,5 @@ class Character(private var heatPoint: Double, private val weaknessEnemyType: St
             }
             else -> println("You have not enough gold, going to another enemy.")
         }
-    }
-
-    fun showStats() {
-        println("Gold: $gold \n Armor: $resistance \n HeatPoint: $heatPoint Enemies killed: $enemyKilled")
     }
 }

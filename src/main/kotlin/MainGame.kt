@@ -4,10 +4,10 @@ import java.util.*
 
 fun main() {
 
-    val character = Character(500.0, Dragon.TYPE, 100)
+    val character = Character(2000.0, Dragon.TYPE, Mutant.TYPE, 100)
 
     try {
-        val impl = EnemyBaseImpl(Scanner(File("src/Enemies")))
+        val impl = EnemyBase(Scanner(File("src/Enemies")))
         impl.enter(character)
     } catch (ex: FileNotFoundException) {
         println("Enemies file not found")
