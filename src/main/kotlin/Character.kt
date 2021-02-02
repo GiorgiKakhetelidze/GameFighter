@@ -2,15 +2,14 @@ import java.util.*
 
 class Character(
     private var heatPoint: Double,
+    private val attackStrength: Int,
     weaknessEnemyTypeFirst: String,
-    weaknessEnemyTypeSecond: String,
-    private val attackStrength: Int
+    weaknessEnemyTypeSecond: String
 ) {
-
-    val weaknessTypeList = ArrayList<String>()
     private var resistance = 1.0
     private var gold = 0
     private val startingHeatPoint = heatPoint
+    val weaknessTypeList = ArrayList<String>()
     var enemyKilled = 0
 
     init {
@@ -20,6 +19,27 @@ class Character(
         } else
             weaknessTypeList.add(weaknessEnemyTypeFirst)
     }
+
+    //Only IShop can access private fields
+    fun getResistance(shop: IShop) = resistance
+
+    fun setResistance(shop: IShop, resistance: Double) {
+        this.resistance += resistance
+    }
+
+    fun getGold(shop: IShop) = gold
+
+    fun setGold(shop: IShop, gold: Int) {
+        this.gold += gold
+    }
+
+    fun getheatPoint(shop: IShop) = heatPoint
+
+    fun setheatPoint(shop: IShop, heatPoint: Double) {
+        this.heatPoint += heatPoint
+    }
+
+    fun getStartingHeatPoint(shop: IShop) = startingHeatPoint
 
     //Updated: fighting both side
     fun fight(enemy: IEnemy) {
@@ -31,6 +51,9 @@ class Character(
     }
 
     private fun receiveDamage(enemy: IEnemy) {
+        if (enemy is IFlyingEnemy)
+            enemy.flyAttackBonus()
+
         heatPoint = if (weaknessTypeList.contains(enemy.type()))
             heatPoint - enemy.attackStrength() * 2 / resistance
         else
@@ -60,7 +83,7 @@ class Character(
         }
     }
 
-    private fun enterShop(shop: DurabilityShop) {
+    private fun enterShop(shop: IShop) {
         val scn = Scanner(System.`in`)
         var input = scn.next().toLowerCase()
 
@@ -71,12 +94,12 @@ class Character(
 
         if (input == "y") {
             shop.showMenu(this)
-            buyItem(shop.request(), shop)
+            shop.buyItem(shop.request(), this)
         }
     }
 
-    fun needShop(shop: DurabilityShop, enemy: IEnemy) {
-        if (this.gold < shop.heatPointPrice)
+    fun needShop(shop: IShop, enemy: IEnemy) {
+        if (this.gold < shop.getMinimumPrice())
             println("you killed enemy ${enemy.type()} and got reward ${enemy.reward()} going to another enemy")
         else {
             println(
@@ -84,28 +107,6 @@ class Character(
                         "gold(minimum) to rest and visit shop y/n ?"
             )
             enterShop(shop)
-        }
-    }
-
-    private fun buyItem(num: Int, shop: DurabilityShop) {
-        when {
-            num == 1 && this.gold >= shop.resistancePrice -> {
-                this.resistance += 0.1
-                this.gold -= 100
-                println("You bought 0.1 resistance for ${shop.resistancePrice} gold, going to fight.")
-            }
-            num == 2 && this.gold >= shop.heatPointPrice -> {
-                this.heatPoint += 50
-                this.gold -= 60
-                println("You bought 50 heatPoint for ${shop.heatPointPrice} gold, going to fight.")
-            }
-            num == 3 && this.gold >= shop.recoverPrice -> {
-                this.heatPoint =
-                    this.startingHeatPoint
-                this.gold -= 200
-                println("You bought recover full health for ${shop.recoverPrice} gold, going to fight.")
-            }
-            else -> println("You have not enough gold, going to another enemy.")
         }
     }
 }

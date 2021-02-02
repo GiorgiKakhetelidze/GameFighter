@@ -16,9 +16,7 @@ class EnemyBase(scanner: Scanner) : IEnemyBase {
 
     override fun enter(character: Character) {
         println("Fight started")
-
-        for (i in 0 until character.weaknessTypeList.size)
-            enemies.sortBy { it.type() == character.weaknessTypeList[i] }
+        easyWay(character)
 
         for (enemy in enemies) {
             character.fight(enemy)
@@ -27,6 +25,11 @@ class EnemyBase(scanner: Scanner) : IEnemyBase {
         }
 
         println("Our Hero killed all enemies")
+    }
+
+    private fun easyWay(character: Character) {
+        for (i in 0 until character.weaknessTypeList.size)
+            enemies.sortBy { it.type() == character.weaknessTypeList[i] }
     }
 
     fun filterWithWeakness(character: Character): List<IEnemy> {

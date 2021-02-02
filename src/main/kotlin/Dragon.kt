@@ -3,13 +3,15 @@ class Dragon(private var attackStrength: Int, override var heatPoint: Int) : IEn
 
     override fun attackStrength(): Int = attackStrength
 
+    override fun flyAttackBonus() {
+        attackStrength += 5
+    }
+
     override fun reward(): Reward = Reward.DRAGON_BAFF
+
 
     companion object {
         const val TYPE = "DRAGON"
     }
 
-    override fun flyAttackBonus() {
-        attackStrength += 5
-    }
 }

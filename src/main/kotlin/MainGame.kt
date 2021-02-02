@@ -4,7 +4,7 @@ import java.util.*
 
 fun main() {
 
-    val character = Character(2000.0, Dragon.TYPE, Mutant.TYPE, 100)
+    val character = Character(2000.0, 100, Dragon.TYPE, Mutant.TYPE)
 
     try {
         val impl = EnemyBase(Scanner(File("src/Enemies")))
